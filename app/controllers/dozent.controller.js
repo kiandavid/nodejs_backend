@@ -120,25 +120,54 @@ exports.update = (req, res) => {
 // Delete a Lecturer with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
-    Dozent.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Lecturer was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Lecturer with id=${id}. Maybe Lecturer was not found!`
-                });
-            }
+    if (!req.body.kursId) {
+        Dozent.destroy({
+            where: { id: id }
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Lecturer with id=" + id
+            .then(num => {
+                if (num == 1) {
+                    res.send({
+                        message: "Lecturer was deleted successfully!"
+                    });
+                } else {
+                    res.send({
+                        message: `Cannot delete Lecturer with id=${id}. Maybe Lecturer was not found!`
+                    });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: "Could not delete Lecturer with id=" + id
+                });
             });
-        });
+    } else {
+        const dozentId = req.params.id;
+        const kursId = req.body.kursId;
+        return Dozent.findByPk(dozentId)
+            .then((dozent) => {
+                if (!dozent) {
+                    res.status(404).send({
+                        message: `Cannot find dozent with id=${dozentId}.`
+                    });
+                }
+                return Kurs.findByPk(kursId)
+                    .then((kurs) => {
+                        if (!kurs) {
+                            res.status(404).send({
+                                message: `Cannot find Kurs with id=${kursId}.`
+                            });
+                        }
+                        dozent.removeKurs(kurs);
+                        console.log(`>> deleted Kurs id=${kurs.id} from dozent id=${dozent.id}`);
+                        res.send(dozent);
+                    });
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: "Error: " + err
+                });
+            });
+    }
 };
 // Delete all Lecturers from the database.
 exports.deleteAll = (req, res) => {
@@ -177,36 +206,6 @@ exports.addKurs = (req, res) => {
                     }
                     dozent.addKurs(kurs);
                     console.log(`>> added Kurs id=${kurs.id} to dozent id=${dozent.id}`);
-                    res.send(dozent);
-                });
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message: "Error: " + err
-            });
-        });
-};
-
-// Fügt dem Dozenten-Objekt einen Kurs hinzu
-exports.deleteKurs = (req, res) => {
-    const dozentId = req.params.id;
-    const kursId = req.body.kursId;
-    return Dozent.findByPk(dozentId)
-        .then((dozent) => {
-            if (!dozent) {
-                res.status(404).send({
-                    message: `Cannot find dozent with id=${dozentId}.`
-                });
-            }
-            return Kurs.findByPk(kursId)
-                .then((kurs) => {
-                    if (!kurs) {
-                        res.status(404).send({
-                            message: `Cannot find Kurs with id=${kursId}.`
-                        });
-                    }
-                    dozent.deleteKurs(kurs);
-                    console.log(`>> deleted Kurs id=${kurs.id} from dozent id=${dozent.id}`);
                     res.send(dozent);
                 });
         })
