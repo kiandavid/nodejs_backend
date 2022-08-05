@@ -1,5 +1,7 @@
 const db = require("../models");
-const Student = db.studenten; //definiert unter models/index.js
+const Student = db.studenten;
+const Loesung = db.loesungen;
+const Kurs = db.kurse;
 const Op = db.Sequelize.Op;
 
 // Student = Obj
@@ -46,17 +48,25 @@ exports.findAll = (req, res) => {
     const email = req.query.email;
     var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
     Student.findAll({
-        where: condition,
-        include: [
-            {
-                model: loesung,
-                as: "loesungen",
-                attributes: ["id", "bezeichnung", "loesung", "punkte"],
-                through: {
-                    attributes: [],
-                }
-            },
-        ],
+        // where: condition,
+        // include: [
+        //     {
+        //         model: Kurs,
+        //         as: "kurse",
+        //         attributes: ["id", "bezeichnung", "semester"],
+        //         through: {
+        //             attributes: [],
+        //         }
+        //     },
+        //     {
+        //         model: Loesung,
+        //         as: "loesungen",
+        //         attributes: ["id", "bezeichnung", "loesung", "punkte"],
+        //         through: {
+        //             attributes: [],
+        //         }
+        //     },
+        // ],
     })
         .then(data => {
             res.send(data);

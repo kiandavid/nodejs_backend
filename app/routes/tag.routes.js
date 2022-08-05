@@ -3,7 +3,7 @@ module.exports = app => {
     var router = require("express").Router();
     // Create a new tag
     router.post("/", tags.create);
-    // Create a new tag
+    // Add a tutorial to a tag
     router.post("/:id", tags.addTutorial);
     // Retrieve all tags
     router.get("/", tags.findAll);

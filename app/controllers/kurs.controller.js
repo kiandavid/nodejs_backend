@@ -1,5 +1,7 @@
 const db = require("../models");
 const Kurs = db.kurse;
+const Studenten = db.studenten;
+const Aufgaben = db.aufgaben;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Course
@@ -32,7 +34,27 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const bezeichnung = req.query.bezeichnung;
     var condition = bezeichnung ? { bezeichnung: { [Op.iLike]: `%${bezeichnung}%` } } : null;
-    Kurs.findAll({ where: condition, include: ["aufgaben"] })
+    Kurs.findAll({
+        where: condition,
+        include: {
+            model: Aufgaben,
+            as: "aufgaben",
+            attributes: ["id", "bezeichnung", "punkte_max"],
+            // through: {
+            //     attributes: [],
+            // }
+        }
+        // {
+        //     model: Studenten,
+        //     as: "studenten",
+        //     attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
+        //     through: {
+        //         attributes: [],
+        //     }
+        // }
+
+
+    })
         .then(data => {
             res.send(data);
         })
@@ -46,7 +68,26 @@ exports.findAll = (req, res) => {
 // Find a single Course with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Kurs.findByPk(id, { include: ["aufgaben"] })
+    Kurs.findByPk(id, {
+        include: [
+            {
+                model: Aufgaben,
+                as: "aufgaben",
+                attributes: ["id", "bezeichnung", "punkte"],
+                through: {
+                    attributes: [],
+                }
+            },
+            // {
+            //     model: Studenten,
+            //     as: "studenten",
+            //     attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
+            //     through: {
+            //         attributes: [],
+            //     }
+            // }
+        ]
+    })
         .then(data => {
             if (data) {
                 res.send(data);
@@ -125,3 +166,31 @@ exports.deleteAll = (req, res) => {
         });
 };
 
+exports.addStudent = (req, res) => {
+    const kursId = req.params.id;
+    const studentId = req.body.studentId;
+    return Kurs.findByPk(kursId)
+        .then((kurs) => {
+            if (!kurs) {
+                res.status(404).send({
+                    message: `Cannot find kurs with id=${kursId}.`
+                });
+            }
+            return Studenten.findByPk(studentId)
+                .then((student) => {
+                    if (!student) {
+                        res.status(404).send({
+                            message: `Cannot find Student with id=${studentId}.`
+                        });
+                    }
+                    kurs.addStudent(student);
+                    console.log(`>> added Student id=${student.id} to kurs id=${kurs.id}`);
+                    res.send(kurs);
+                });
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error: " + err
+            });
+        });
+};

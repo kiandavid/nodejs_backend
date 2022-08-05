@@ -9,6 +9,8 @@ module.exports = (sequelize, Sequelize) => {
         aufgabe: {
             type: Sequelize.BLOB
         }
-    });
+    },
+        { timestamps: false }
+    );
     return Aufgabe;
 };

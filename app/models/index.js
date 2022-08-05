@@ -40,6 +40,21 @@ db.aufgaben.belongsTo(db.kurse);
 db.tutorial = require("./tutorial.model.js")(sequelize, Sequelize);
 db.tag = require("./tag.model.js")(sequelize, Sequelize);
 
+
+db.kurse.belongsToMany(db.studenten, {
+    through: "kurse_studenten",
+    as: "kurse",
+    foreignKey: "kurs_id",
+});
+db.studenten.belongsToMany(db.kurse, {
+    through: "kurse_studenten",
+    as: "studenten",
+    foreignKey: "student_id",
+});
+
+
+
+
 db.tag.belongsToMany(db.tutorial, {
     through: "tutorial_tag",
     as: "tutorials",
