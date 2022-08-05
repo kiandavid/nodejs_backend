@@ -49,24 +49,21 @@ exports.findAll = (req, res) => {
     var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
     Student.findAll({
         // where: condition,
-        // include: [
-        //     {
-        //         model: Kurs,
-        //         as: "kurse",
-        //         attributes: ["id", "bezeichnung", "semester"],
-        //         through: {
-        //             attributes: [],
-        //         }
-        //     },
-        //     {
-        //         model: Loesung,
-        //         as: "loesungen",
-        //         attributes: ["id", "bezeichnung", "loesung", "punkte"],
-        //         through: {
-        //             attributes: [],
-        //         }
-        //     },
-        // ],
+        include: [
+            {
+                //  hier funktionieren Aliase nicht
+                model: Kurs,
+                attributes: ["id", "bezeichnung", "semester"]
+            }
+            //     {
+            //         model: Loesung,
+            //         as: "loesungen",
+            //         attributes: ["id", "bezeichnung", "loesung", "punkte"],
+            //         through: {
+            //             attributes: [],
+            //         }
+            //     },
+        ],
     })
         .then(data => {
             res.send(data);
@@ -110,14 +107,16 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     Student.findByPk(id, {
         include: [
+            // {
+            //     model: loesung,
+            //     as: "loesungen",
+            //     attributes: ["id", "bezeichnung", "loesung", "punkte"],
+            // },
             {
-                model: loesung,
-                as: "loesungen",
-                attributes: ["id", "bezeichnung", "loesung", "punkte"],
-                through: {
-                    attributes: [],
-                }
-            },
+                //  hier funktionieren Aliase nicht
+                model: Kurs,
+                attributes: ["id", "bezeichnung", "semester"]
+            }
         ],
     })
         .then(data => {

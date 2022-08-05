@@ -1,6 +1,7 @@
 const db = require("../models");
 const Kurs = db.kurse;
 const Studenten = db.studenten;
+const Dozenten = db.dozenten;
 const Aufgaben = db.aufgaben;
 const Op = db.Sequelize.Op;
 
@@ -45,7 +46,11 @@ exports.findAll = (req, res) => {
         {
             // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
             model: Studenten,
-            attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
+            attributes: ["id", "vorname", "nachname", "email", "matrikelnummer", "studiengang"]
+        },
+        {
+            model: Dozenten,
+            attributes: ["id", "titel", "vorname", "nachname", "email"]
         }
         ]
 
@@ -74,7 +79,11 @@ exports.findOne = (req, res) => {
             {
                 // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
                 model: Studenten,
-                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
+                attributes: ["id", "vorname", "nachname", "email", "matrikelnummer", "studiengang"]
+            },
+            {
+                model: Dozenten,
+                attributes: ["id", "titel", "vorname", "nachname", "email"]
             }
         ]
     })
@@ -119,25 +128,55 @@ exports.update = (req, res) => {
 // Delete a Course with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
-    Kurs.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Course was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Course with id=${id}. Maybe Course was not found!`
-                });
-            }
+    if (!req.body.studentId) {
+        Kurs.destroy({
+            where: { id: id }
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Course with id=" + id
+            .then(num => {
+                if (num == 1) {
+                    res.send({
+                        message: "Course was deleted successfully!"
+                    });
+                } else {
+                    res.send({
+                        message: `Cannot delete Course with id=${id}. Maybe Course was not found!`
+                    });
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: "Could not delete Course with id=" + id
+                });
             });
-        });
+    } else {
+        const kursId = req.params.id;
+        const studentId = req.body.studentId;
+        return Kurs.findByPk(kursId)
+            .then((kurs) => {
+                if (!kurs) {
+                    res.status(404).send({
+                        message: `Cannot find kurs with id=${kursId}.`
+                    });
+                }
+                return Studenten.findByPk(studentId)
+                    .then((student) => {
+                        if (!student) {
+                            res.status(404).send({
+                                message: `Cannot find Student with id=${studentId}.`
+                            });
+                        }
+                        kurs.removeStudent(student);
+                        console.log(`>> removed Student id=${student.id} from kurs id=${kurs.id}`);
+                        res.send(kurs);
+                    });
+            })
+            .catch((err) => {
+                res.status(500).send({
+                    message: "Error: " + err
+                });
+            });
+    }
+
 };
 // Delete all Courses from the database.
 exports.deleteAll = (req, res) => {
