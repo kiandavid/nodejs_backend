@@ -37,27 +37,32 @@ db.aufgaben.belongsTo(db.kurse);
 
 
 
-// n:m Beziehungen,
-
-
+// n:m Beziehungen
 
 // Kurse:Studenten 
+
+const kurse_studenten = sequelize.define('kurse_studenten', {}, { timestamps: false });
+
 db.kurse.belongsToMany(db.studenten, {
-    through: "kurse_studenten",
+    through: kurse_studenten,
 });
 
 db.studenten.belongsToMany(db.kurse, {
-    through: "kurse_studenten",
+    through: kurse_studenten,
 });
 
 
 // Dozenten:Kurse 
+
+const dozenten_kurse = sequelize.define('dozenten_kurse', {}, { timestamps: false });
+
+
 db.kurse.belongsToMany(db.dozenten, {
-    through: "dozenten_kurse",
+    through: dozenten_kurse,
 });
 
 db.dozenten.belongsToMany(db.kurse, {
-    through: "dozenten_kurse",
+    through: dozenten_kurse,
 });
 
 
