@@ -3,6 +3,8 @@ module.exports = (sequelize, Sequelize) => {
         anmerkung: {
             type: Sequelize.STRING
         }
-    });
+    },
+        { timestamps: false }
+    );
     return Feedback;
 };

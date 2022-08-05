@@ -9,6 +9,8 @@ module.exports = (sequelize, Sequelize) => {
         punkte: {
             type: Sequelize.DECIMAL
         }
-    });
+    },
+        { timestamps: false }
+    );
     return Loesung;
 };
