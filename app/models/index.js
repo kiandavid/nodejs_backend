@@ -25,6 +25,8 @@ db.loesungen = require("./loesung.model.js")(sequelize, Sequelize);
 db.studenten = require("./student.model.js")(sequelize, Sequelize);
 
 // 1:n Beziehungen
+
+// Mehrere Aufgaben in einem Kurs
 db.kurse.hasMany(db.aufgaben, { as: "aufgaben" });
 db.aufgaben.belongsTo(db.kurse);
 
@@ -43,13 +45,10 @@ db.tag = require("./tag.model.js")(sequelize, Sequelize);
 
 db.kurse.belongsToMany(db.studenten, {
     through: "kurse_studenten",
-    as: "kurse",
-    foreignKey: "kurs_id",
 });
+
 db.studenten.belongsToMany(db.kurse, {
     through: "kurse_studenten",
-    as: "studenten",
-    foreignKey: "student_id",
 });
 
 

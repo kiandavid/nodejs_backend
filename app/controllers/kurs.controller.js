@@ -36,23 +36,18 @@ exports.findAll = (req, res) => {
     var condition = bezeichnung ? { bezeichnung: { [Op.iLike]: `%${bezeichnung}%` } } : null;
     Kurs.findAll({
         where: condition,
-        include: {
+        include: [{
+            // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
             model: Aufgaben,
             as: "aufgaben",
             attributes: ["id", "bezeichnung", "punkte_max"],
-            // through: {
-            //     attributes: [],
-            // }
+        },
+        {
+            // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
+            model: Studenten,
+            attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
         }
-        // {
-        //     model: Studenten,
-        //     as: "studenten",
-        //     attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
-        //     through: {
-        //         attributes: [],
-        //     }
-        // }
-
+        ]
 
     })
         .then(data => {
@@ -71,21 +66,16 @@ exports.findOne = (req, res) => {
     Kurs.findByPk(id, {
         include: [
             {
+                // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
                 model: Aufgaben,
                 as: "aufgaben",
-                attributes: ["id", "bezeichnung", "punkte"],
-                through: {
-                    attributes: [],
-                }
+                attributes: ["id", "bezeichnung", "punkte_max"],
             },
-            // {
-            //     model: Studenten,
-            //     as: "studenten",
-            //     attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
-            //     through: {
-            //         attributes: [],
-            //     }
-            // }
+            {
+                // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
+                model: Studenten,
+                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
+            }
         ]
     })
         .then(data => {
