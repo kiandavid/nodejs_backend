@@ -186,3 +186,33 @@ exports.addKurs = (req, res) => {
             });
         });
 };
+
+// Fügt dem Dozenten-Objekt einen Kurs hinzu
+exports.deleteKurs = (req, res) => {
+    const dozentId = req.params.id;
+    const kursId = req.body.kursId;
+    return Dozent.findByPk(dozentId)
+        .then((dozent) => {
+            if (!dozent) {
+                res.status(404).send({
+                    message: `Cannot find dozent with id=${dozentId}.`
+                });
+            }
+            return Kurs.findByPk(kursId)
+                .then((kurs) => {
+                    if (!kurs) {
+                        res.status(404).send({
+                            message: `Cannot find Kurs with id=${kursId}.`
+                        });
+                    }
+                    dozent.deleteKurs(kurs);
+                    console.log(`>> deleted Kurs id=${kurs.id} from dozent id=${dozent.id}`);
+                    res.send(dozent);
+                });
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error: " + err
+            });
+        });
+};

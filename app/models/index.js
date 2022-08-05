@@ -39,8 +39,6 @@ db.aufgaben.belongsTo(db.kurse);
 
 // n:m Beziehungen,
 
-db.tutorial = require("./tutorial.model.js")(sequelize, Sequelize);
-db.tag = require("./tag.model.js")(sequelize, Sequelize);
 
 
 // Kurse:Studenten 
@@ -65,16 +63,6 @@ db.dozenten.belongsToMany(db.kurse, {
 
 
 
-db.tag.belongsToMany(db.tutorial, {
-    through: "tutorial_tag",
-    as: "tutorials",
-    foreignKey: "tag_id",
-});
-db.tutorial.belongsToMany(db.tag, {
-    through: "tutorial_tag",
-    as: "tags",
-    foreignKey: "tutorial_id",
-});
 
 
 module.exports = db;

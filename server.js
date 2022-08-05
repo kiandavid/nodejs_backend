@@ -47,9 +47,6 @@ require("./app/routes/kurs.routes")(app);
 require("./app/routes/loesung.routes")(app);
 require("./app/routes/student.routes")(app);
 
-//test
-require("./app/routes/tutorial.routes")(app);
-require("./app/routes/tag.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8082;

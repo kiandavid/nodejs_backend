@@ -15,5 +15,7 @@ module.exports = app => {
     router.delete("/:id", dozenten.delete);
     // Create a new Dozent
     router.delete("/", dozenten.deleteAll);
+    // Create a new Dozent
+    router.delete("/:id", dozenten.deleteKurs);
     app.use('/api/dozenten', router);
 };
