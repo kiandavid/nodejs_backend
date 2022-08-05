@@ -3,6 +3,8 @@ module.exports = app => {
     var router = require("express").Router();
     // Create a new Dozent
     router.post("/", dozenten.create);
+    // Add a Kurs to Dozent-Objekt
+    router.post("/:id", dozenten.addKurs);
     // Retrieve all dozenten
     router.get("/", dozenten.findAll);
     // Retrieve a single Dozent with id

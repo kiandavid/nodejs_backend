@@ -43,12 +43,23 @@ db.tutorial = require("./tutorial.model.js")(sequelize, Sequelize);
 db.tag = require("./tag.model.js")(sequelize, Sequelize);
 
 
+// Kurse:Studenten 
 db.kurse.belongsToMany(db.studenten, {
     through: "kurse_studenten",
 });
 
 db.studenten.belongsToMany(db.kurse, {
     through: "kurse_studenten",
+});
+
+
+// Dozenten:Kurse 
+db.kurse.belongsToMany(db.dozenten, {
+    through: "dozenten_kurse",
+});
+
+db.dozenten.belongsToMany(db.kurse, {
+    through: "dozenten_kurse",
 });
 
 

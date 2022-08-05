@@ -156,6 +156,7 @@ exports.deleteAll = (req, res) => {
         });
 };
 
+// Fügt dem Kurs einen Studenten zu
 exports.addStudent = (req, res) => {
     const kursId = req.params.id;
     const studentId = req.body.studentId;

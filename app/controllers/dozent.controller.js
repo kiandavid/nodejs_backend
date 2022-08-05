@@ -1,5 +1,6 @@
 const db = require("../models");
-const Dozent = db.dozenten; //definiert unter models/index.js
+const Dozent = db.dozenten;
+const Kurs = db.kurse;
 const Op = db.Sequelize.Op;
 
 // Dozent = Obj
@@ -44,7 +45,16 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const email = req.query.email;
     var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
-    Dozent.findAll({ where: condition })
+    Dozent.findAll({
+        where: condition,
+        include: [
+            {
+                //  hier funktionieren Aliase nicht
+                model: Kurs,
+                attributes: ["id", "bezeichnung", "semester"]
+            }
+        ]
+    })
         .then(data => {
             res.send(data);
         })
@@ -60,7 +70,15 @@ exports.findAll = (req, res) => {
 // Find a single Lecturer with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Dozent.findByPk(id)
+    Dozent.findByPk(id, {
+        include: [
+            {
+                //  hier funktionieren Aliase nicht
+                model: Kurs,
+                attributes: ["id", "bezeichnung", "semester"]
+            }
+        ]
+    })
         .then(data => {
             if (data) {
                 res.send(data);
@@ -139,3 +157,32 @@ exports.deleteAll = (req, res) => {
         });
 };
 
+// Fügt dem Dozenten-Objekt einen Kurs hinzu
+exports.addKurs = (req, res) => {
+    const dozentId = req.params.id;
+    const kursId = req.body.kursId;
+    return Dozent.findByPk(dozentId)
+        .then((dozent) => {
+            if (!dozent) {
+                res.status(404).send({
+                    message: `Cannot find dozent with id=${dozentId}.`
+                });
+            }
+            return Kurs.findByPk(kursId)
+                .then((kurs) => {
+                    if (!kurs) {
+                        res.status(404).send({
+                            message: `Cannot find Kurs with id=${kursId}.`
+                        });
+                    }
+                    dozent.addKurs(kurs);
+                    console.log(`>> added Kurs id=${kurs.id} to dozent id=${dozent.id}`);
+                    res.send(dozent);
+                });
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: "Error: " + err
+            });
+        });
+};
