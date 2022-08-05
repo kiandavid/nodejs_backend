@@ -27,42 +27,13 @@ const db = require("./app/models");
 //         console.log("Failed to sync db: " + err.message);
 //     });
 
+
+
 // Bei Neustart wird die DB resettet
-
-// db.sequelize.sync({ force: true }).then(() => {
-//     console.log("Drop and re-sync db.");
-// });
-
-
-
-const TutorialController = require("./app/controllers/tutorial.controller");
-const TagController = require("./app/controllers/tag.controller");
-const run = async () => {
-
-    const tut1 = await TutorialController.create({
-        title: "Tut#1",
-        description: "Tut#1 Description",
-    });
-    const tut2 = await TutorialController.create({
-        title: "Tut#2",
-        description: "Tut#2 Description",
-    });
-
-    const tag1 = await TagController.create({
-        name: "Tag#1",
-    });
-
-    const tag2 = await TagController.create({
-        name: "Tag#2",
-    });
-};
 
 db.sequelize.sync({ force: true }).then(() => {
     console.log("Drop and re-sync db.");
-    run();
 });
-
-
 
 
 
