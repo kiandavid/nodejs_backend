@@ -41,7 +41,7 @@ exports.findAll = (req, res) => {
             // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
             model: Aufgaben,
             as: "aufgaben",
-            attributes: ["id", "bezeichnung", "punkte_max"],
+            attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"],
         },
         {
             // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
@@ -74,7 +74,7 @@ exports.findOne = (req, res) => {
                 // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
                 model: Aufgaben,
                 as: "aufgaben",
-                attributes: ["id", "bezeichnung", "punkte_max"],
+                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"],
             },
             {
                 // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
@@ -98,7 +98,7 @@ exports.findOne = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Course with id=" + id
+                message: "Error" + err
             });
         });
 };
