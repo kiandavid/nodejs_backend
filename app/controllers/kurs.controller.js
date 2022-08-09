@@ -37,21 +37,22 @@ exports.findAll = (req, res) => {
     var condition = bezeichnung ? { bezeichnung: { [Op.iLike]: `%${bezeichnung}%` } } : null;
     Kurs.findAll({
         where: condition,
-        include: [{
-            // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
-            model: Aufgaben,
-            as: "aufgaben",
-            attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"],
-        },
-        {
-            // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
-            model: Studenten,
-            attributes: ["id", "vorname", "nachname", "email", "matrikelnummer", "studiengang"]
-        },
-        {
-            model: Dozenten,
-            attributes: ["id", "titel", "vorname", "nachname", "email"]
-        }
+        include: [
+            {
+                // Für 1:n Beziehungen sind Aliase wie as: "aufgaben" okay
+                model: Aufgaben,
+                as: "aufgaben",
+                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"],
+            },
+            {
+                // aber hier funktionieren Aliase nicht. Deswegen heißt das das Studenten-Array "students"
+                model: Studenten,
+                attributes: ["id", "vorname", "nachname", "email", "matrikelnummer", "studiengang"]
+            },
+            {
+                model: Dozenten,
+                attributes: ["id", "titel", "vorname", "nachname", "email"]
+            }
         ]
 
     })

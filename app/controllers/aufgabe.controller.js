@@ -1,16 +1,8 @@
 const db = require("../models");
-const Aufgabe = db.aufgaben; //definiert unter models/index.js
+const Aufgabe = db.aufgaben;
+const Kurs = db.kurse;
+const Loesung = db.loesungen;
 const Op = db.Sequelize.Op;
-
-// Aufgabe = Obj
-// aufgaben = objekte //definiert unter models/index.js
-// Task = Objects, für messages und Kommentare
-// bezeichnung = Suche nach TItel
-
-// ###POST###
-
-// aufgabe = Selbst erstelltes Objekt
-// create -> alle Attribute rein
 
 // Create and Save a new Task
 exports.create = (req, res) => {
@@ -44,7 +36,21 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const bezeichnung = req.query.bezeichnung;
     var condition = bezeichnung ? { bezeichnung: { [Op.iLike]: `%${bezeichnung}%` } } : null;
-    Aufgabe.findAll({ where: condition })
+    Aufgabe.findAll({
+        where: condition,
+        include: [
+            {
+                model: Kurs,
+                as: "kurs",
+                attributes: ["id", "bezeichnung", "semester"]
+            },
+            {
+                model: Loesung,
+                as: "loesungen",
+                attributes: ["id", "bezeichnung", "loesung", "punkte"]
+            }
+        ]
+    })
         .then(data => {
             res.send(data);
         })
@@ -60,7 +66,21 @@ exports.findAll = (req, res) => {
 // Find a single Task with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Aufgabe.findByPk(id, { include: ["kurs"] })
+    Aufgabe.findByPk(id, {
+        include: [
+            {
+                //  hier funktionieren Aliase nicht
+                model: Kurs,
+                as: "kurs",
+                attributes: ["id", "bezeichnung", "semester"]
+            },
+            {
+                model: Loesung,
+                as: "loesungen",
+                attributes: ["id", "bezeichnung", "loesung", "punkte"]
+            }
+        ]
+    })
         .then(data => {
             if (data) {
                 res.send(data);

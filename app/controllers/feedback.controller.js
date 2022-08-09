@@ -1,16 +1,9 @@
 const db = require("../models");
-const Feedback = db.feedback; //definiert unter models/index.js
+const Feedback = db.feedback;
+const Bewertungsaspekt = db.bewertungsaspekte;
 const Op = db.Sequelize.Op;
 
-// Feedback = Obj
-// feedback = objekte //definiert unter models/index.js
-// Feedback = Objects, für messages und Kommentare
-// anmerkung = Suche nach TItel
 
-// ###POST###
-
-// feedback = Selbst erstelltes Objekt
-// create -> alle Attribute rein
 
 // Create and Save a new Feedback
 exports.create = (req, res) => {
@@ -41,7 +34,16 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const anmerkung = req.query.anmerkung;
     var condition = anmerkung ? { anmerkung: { [Op.iLike]: `%${anmerkung}%` } } : null;
-    Feedback.findAll({ where: condition })
+    Feedback.findAll({
+        where: condition,
+        include: [
+            {
+                model: Bewertungsaspekt,
+                as: "bewertungsaspekt",
+                attributes: ["id", "typ", "punkte",]
+            }
+        ]
+    })
         .then(data => {
             res.send(data);
         })
@@ -57,7 +59,15 @@ exports.findAll = (req, res) => {
 // Find a single Feedback with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Feedback.findByPk(id)
+    Feedback.findByPk(id, {
+        include: [
+            {
+                model: Bewertungsaspekt,
+                as: "bewertungsaspekt",
+                attributes: ["id", "typ", "punkte",]
+            }
+        ]
+    })
         .then(data => {
             if (data) {
                 res.send(data);

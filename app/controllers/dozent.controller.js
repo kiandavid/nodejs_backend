@@ -3,15 +3,6 @@ const Dozent = db.dozenten;
 const Kurs = db.kurse;
 const Op = db.Sequelize.Op;
 
-// Dozent = Obj
-// dozenten = objekte //definiert unter models/index.js
-// Lecturer = Objects, für messages und Kommentare
-// email = Suche nach TItel
-
-// ###POST###
-
-// dozent = Selbst erstelltes Objekt
-// create -> alle Attribute rein
 
 // Create and Save a new Lecturer
 exports.create = (req, res) => {

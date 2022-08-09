@@ -4,16 +4,6 @@ const Loesung = db.loesungen;
 const Kurs = db.kurse;
 const Op = db.Sequelize.Op;
 
-// Student = Obj
-// studenten = objekte //definiert unter models/index.js
-// Student = Objects, für messages und Kommentare
-// email = Suche nach TItel
-
-// ###POST###
-
-// student = Selbst erstelltes Objekt
-// create -> alle Attribute rein
-
 // Create and Save a new Student
 exports.create = (req, res) => {
     // Validate request
@@ -48,22 +38,19 @@ exports.findAll = (req, res) => {
     const email = req.query.email;
     var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
     Student.findAll({
-        // where: condition,
+        where: condition,
         include: [
             {
                 //  hier funktionieren Aliase nicht
                 model: Kurs,
                 attributes: ["id", "bezeichnung", "semester"]
+            },
+            {
+                model: Loesung,
+                as: "loesungen",
+                attributes: ["id", "bezeichnung", "loesung", "punkte"]
             }
-            //     {
-            //         model: Loesung,
-            //         as: "loesungen",
-            //         attributes: ["id", "bezeichnung", "loesung", "punkte"],
-            //         through: {
-            //             attributes: [],
-            //         }
-            //     },
-        ],
+        ]
     })
         .then(data => {
             res.send(data);
@@ -107,17 +94,17 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     Student.findByPk(id, {
         include: [
-            // {
-            //     model: loesung,
-            //     as: "loesungen",
-            //     attributes: ["id", "bezeichnung", "loesung", "punkte"],
-            // },
             {
                 //  hier funktionieren Aliase nicht
                 model: Kurs,
                 attributes: ["id", "bezeichnung", "semester"]
+            },
+            {
+                model: Loesung,
+                as: "loesungen",
+                attributes: ["id", "bezeichnung", "loesung", "punkte"]
             }
-        ],
+        ]
     })
         .then(data => {
             if (data) {

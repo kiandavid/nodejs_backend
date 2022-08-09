@@ -1,16 +1,10 @@
 const db = require("../models");
-const Loesung = db.loesungen; //definiert unter models/index.js
+const Loesung = db.loesungen;
+const Student = db.studenten;
+const Aufgabe = db.aufgaben;
+const Bewertungsaspekt = db.bewertungsaspekte;
 const Op = db.Sequelize.Op;
 
-// Loesung = Obj
-// loesungen = objekte //definiert unter models/index.js
-// Solution = Objects, für messages und Kommentare
-// bezeichnung = Suche nach TItel
-
-// ###POST###
-
-// loesung = Selbst erstelltes Objekt
-// create -> alle Attribute rein
 
 // Create and Save a new Solution
 exports.create = (req, res) => {
@@ -47,17 +41,21 @@ exports.findAll = (req, res) => {
         where: condition,
         include: [
             {
-                model: student,
-                as: "studenten",
-                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
-                through: {
-                    attributes: [],
-                },
-                // through: {
-                //   attributes: ["student_id", "tutorial_id"],
-                // },
+                model: Student,
+                as: "student",
+                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
             },
-        ],
+            {
+                model: Aufgabe,
+                as: "aufgabe",
+                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"]
+            },
+            {
+                model: Bewertungsaspekt,
+                as: "bewertungsaspekte",
+                attributes: ["id", "typ", "punkte",]
+            }
+        ]
     })
         .then(data => {
             res.send(data);
@@ -77,16 +75,20 @@ exports.findOne = (req, res) => {
     Loesung.findByPk(id, {
         include: [
             {
-                model: student,
-                as: "studenten",
-                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"],
-                through: {
-                    attributes: [],
-                },
-                // through: {
-                //   attributes: ["student_id", "tutorial_id"],
-                // },
+                model: Student,
+                as: "student",
+                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
             },
+            {
+                model: Aufgabe,
+                as: "aufgabe",
+                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"]
+            },
+            {
+                model: Bewertungsaspekt,
+                as: "bewertungsaspekte",
+                attributes: ["id", "typ", "punkte"]
+            }
         ],
     })
         .then(data => {
