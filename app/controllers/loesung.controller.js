@@ -19,7 +19,9 @@ exports.create = (req, res) => {
     const loesung = {
         bezeichnung: req.body.bezeichnung,
         loesung: req.body.loesung,
-        punkte: req.body.punkte
+        punkte: req.body.punkte,
+        aufgabeId: req.body.aufgabeId,
+        studentId: req.body.studentId
     };
     // Save Solution in the database
     Loesung.create(loesung)
@@ -40,16 +42,6 @@ exports.findAll = (req, res) => {
     Loesung.findAll({
         where: condition,
         include: [
-            {
-                model: Student,
-                as: "student",
-                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
-            },
-            {
-                model: Aufgabe,
-                as: "aufgabe",
-                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"]
-            },
             {
                 model: Bewertungsaspekt,
                 as: "bewertungsaspekte",
@@ -75,19 +67,10 @@ exports.findOne = (req, res) => {
     Loesung.findByPk(id, {
         include: [
             {
-                model: Student,
-                as: "student",
-                attributes: ["id", "vorname", "nachname", "matrikelnummer", "studiengang", "email"]
-            },
-            {
-                model: Aufgabe,
-                as: "aufgabe",
-                attributes: ["id", "bezeichnung", "punkte_max", "aufgabe"]
-            },
-            {
                 model: Bewertungsaspekt,
                 as: "bewertungsaspekte",
-                attributes: ["id", "typ", "punkte"]
+                attributes: ["id", "typ", "punkte"],
+                include: "feedback"
             }
         ],
     })

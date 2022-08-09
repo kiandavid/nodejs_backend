@@ -18,7 +18,8 @@ exports.create = (req, res) => {
     // Create a Evaluation aspect
     const bewertungsaspekt = {
         typ: req.body.typ,
-        punkte: req.body.punkte
+        punkte: req.body.punkte,
+        loesungId: req.body.loesungsId
     };
     // Save Evaluation aspect in the database
     Bewertungsaspekt.create(bewertungsaspekt)
@@ -43,11 +44,6 @@ exports.findAll = (req, res) => {
                 model: Feedback,
                 as: "feedback",
                 attributes: ["id", "anmerkung"]
-            },
-            {
-                model: Loesung,
-                as: "loesung",
-                attributes: ["id", "bezeichnung", "loesung", "punkte"]
             }
         ]
     })
@@ -72,11 +68,6 @@ exports.findOne = (req, res) => {
                 model: Feedback,
                 as: "feedback",
                 attributes: ["id", "anmerkung"]
-            },
-            {
-                model: Loesung,
-                as: "loesung",
-                attributes: ["id", "bezeichnung", "loesung", "punkte"]
             }
         ]
     })

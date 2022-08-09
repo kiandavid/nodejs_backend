@@ -40,11 +40,6 @@ exports.findAll = (req, res) => {
         where: condition,
         include: [
             {
-                model: Kurs,
-                as: "kurs",
-                attributes: ["id", "bezeichnung", "semester"]
-            },
-            {
                 model: Loesung,
                 as: "loesungen",
                 attributes: ["id", "bezeichnung", "loesung", "punkte"]
@@ -68,12 +63,6 @@ exports.findOne = (req, res) => {
     const id = req.params.id;
     Aufgabe.findByPk(id, {
         include: [
-            {
-                //  hier funktionieren Aliase nicht
-                model: Kurs,
-                as: "kurs",
-                attributes: ["id", "bezeichnung", "semester"]
-            },
             {
                 model: Loesung,
                 as: "loesungen",
