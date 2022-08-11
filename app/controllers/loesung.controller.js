@@ -37,15 +37,16 @@ exports.create = (req, res) => {
 };
 // Retrieve all Solutions from the database.
 exports.findAll = (req, res) => {
-    const bezeichnung = req.query.bezeichnung;
-    var condition = bezeichnung ? { bezeichnung: { [Op.iLike]: `%${bezeichnung}%` } } : null;
+    const aufgabeId = req.body.aufgabeId;
+    const studentId = req.body.studentId;
     Loesung.findAll({
-        where: condition,
+        where: { aufgabeId: aufgabeId, studentId: studentId },
         include: [
             {
                 model: Bewertungsaspekt,
                 as: "bewertungsaspekte",
-                attributes: ["id", "typ", "punkte",]
+                attributes: ["id", "typ", "punkte",],
+                include: "feedback"
             }
         ]
     })
