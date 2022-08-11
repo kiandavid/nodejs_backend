@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DECIMAL
         },
         aufgabe: {
-            type: Sequelize.BLOB
+            type: Sequelize.STRING
         }
     },
         { timestamps: false }

@@ -18,22 +18,21 @@ const db = require("./app/models");
 
 // Daten werden gespeichert
 
-db.sequelize.sync()
-    .then(() => {
-        console.log("Synced db.");
-        run();
-    })
-    .catch((err) => {
-        console.log("Failed to sync db: " + err.message);
-    });
+// db.sequelize.sync()
+//     .then(() => {
+//         console.log("Synced db.");
+//     })
+//     .catch((err) => {
+//         console.log("Failed to sync db: " + err.message);
+//     });
 
 
 
 // Bei Neustart wird die DB resettet
 
-// db.sequelize.sync({ force: true }).then(() => {
-//     console.log("Drop and re-sync db.");
-// });
+db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+});
 
 
 

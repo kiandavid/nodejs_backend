@@ -12,7 +12,7 @@ module.exports = app => {
     // Update a Kurs with id
     router.put("/:id", kurse.update);
     // Delete a Kurs with id
-    router.delete("/:id", kurse.delete);
+    router.delete("/:id/:studentId", kurse.delete);
     // Create a new Kurs
     router.delete("/", kurse.deleteAll);
     app.use('/api/kurse', router);

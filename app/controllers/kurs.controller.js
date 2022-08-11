@@ -129,14 +129,15 @@ exports.update = (req, res) => {
 // Delete a Course with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
-    if (!req.body.studentId) {
+    const studentId = req.params.studentId;
+    if (studentId == 0) {
         Kurs.destroy({
             where: { id: id }
         })
             .then(num => {
                 if (num == 1) {
                     res.send({
-                        message: "Course was deleted successfully!"
+                        message: `Course was deleted successfully!`
                     });
                 } else {
                     res.send({
@@ -151,7 +152,6 @@ exports.delete = (req, res) => {
             });
     } else {
         const kursId = req.params.id;
-        const studentId = req.body.studentId;
         return Kurs.findByPk(kursId)
             .then((kurs) => {
                 if (!kurs) {
@@ -168,7 +168,9 @@ exports.delete = (req, res) => {
                         }
                         kurs.removeStudent(student);
                         console.log(`>> removed Student id=${student.id} from kurs id=${kurs.id}`);
-                        res.send(kurs);
+                        res.send({
+				message: `Student mit der id=${studentId} aus Kurs entfernt`
+			});
                     });
             })
             .catch((err) => {
