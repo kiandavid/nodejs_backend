@@ -19,7 +19,7 @@ exports.create = (req, res) => {
     const bewertungsaspekt = {
         typ: req.body.typ,
         punkte: req.body.punkte,
-        loesungId: req.body.loesungsId
+        loesungId: req.body.loesungId
     };
     // Save Evaluation aspect in the database
     Bewertungsaspekt.create(bewertungsaspekt)

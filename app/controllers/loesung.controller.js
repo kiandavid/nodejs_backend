@@ -37,10 +37,7 @@ exports.create = (req, res) => {
 };
 // Retrieve all Solutions from the database.
 exports.findAll = (req, res) => {
-    const aufgabeId = req.body.aufgabeId;
-    const studentId = req.body.studentId;
     Loesung.findAll({
-        where: { aufgabeId: aufgabeId, studentId: studentId },
         include: [
             {
                 model: Bewertungsaspekt,
