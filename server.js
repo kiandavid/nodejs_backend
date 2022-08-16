@@ -12,9 +12,10 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// simple route
-app.get("/", (req, res) => {
-	res.json({ message: "Welcome to my application." });
+// aufgabe
+app.get("/api/aufgabe", (req, res) => {
+	let path = req.query.path;
+	res.sendFile(__dirname + "/" + path);
 });
 const db = require("./app/models");
 
