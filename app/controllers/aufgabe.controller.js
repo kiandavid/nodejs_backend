@@ -1,6 +1,5 @@
 const db = require("../models");
 const Aufgabe = db.aufgaben;
-const Kurs = db.kurse;
 const Loesung = db.loesungen;
 const Op = db.Sequelize.Op;
 
