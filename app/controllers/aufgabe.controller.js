@@ -1,8 +1,25 @@
 const db = require("../models");
 const Aufgabe = db.aufgaben;
-const Kurs = db.kurse;
 const Loesung = db.loesungen;
 const Op = db.Sequelize.Op;
+
+const multer = require('multer');
+// const path = require('path');
+
+// Multer middleware für File upload
+
+const fileStorageEngine = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './Aufgaben');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "_" + file.originalname);
+    }
+});
+
+exports.upload = multer({ storage: fileStorageEngine }).single("aufgabe");
+
+
 
 // Create and Save a new Task
 exports.create = (req, res) => {
@@ -17,7 +34,7 @@ exports.create = (req, res) => {
     const aufgabe = {
         bezeichnung: req.body.bezeichnung,
         punkte_max: req.body.punkte_max,
-        aufgabe: req.body.aufgabe,
+        aufgabe: req.file.path,
         kurId: req.body.kursId
     };
     // Save Task in the database

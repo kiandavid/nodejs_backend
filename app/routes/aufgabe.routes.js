@@ -2,7 +2,7 @@ module.exports = app => {
     const aufgaben = require("../controllers/aufgabe.controller.js");
     var router = require("express").Router();
     // Create a new Aufgabe
-    router.post("/", aufgaben.create);
+    router.post("/", aufgaben.upload, aufgaben.create);
     // Retrieve all aufgaben
     router.get("/", aufgaben.findAll);
     // Retrieve a single Aufgabe with id
@@ -14,5 +14,4 @@ module.exports = app => {
     // Create a new Aufgabe
     router.delete("/", aufgaben.deleteAll);
     app.use('/api/aufgaben', router);
-
 };
